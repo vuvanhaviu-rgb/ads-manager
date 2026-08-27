@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ads Manager - Quản lý chi tiêu quảng cáo</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #f5f7fb;
+      color: #172033;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 240px;
+      background: #111827;
+      color: white;
+      padding: 22px 15px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+    }
+
+    .logo {
+      font-size: 21px;
+      font-weight: 700;
+      padding: 10px 12px 25px;
+    }
+
+    .logo span {
+      color: #60a5fa;
+    }
+
+    .menu {
+      list-style: none;
+    }
+
+    .menu li {
+      margin-bottom: 6px;
+    }
+
+    .menu button {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: #cbd5e1;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .menu button:hover,
+    .menu button.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    /* MAIN */
+    .main {
+      margin-left: 240px;
+      width: calc(100% - 240px);
+      padding: 25px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .topbar h1 {
+      font-size: 25px;
+    }
+
+    .date {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    /* CARDS */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .card-title {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .card-value {
+      font-size: 25px;
+      font-weight: 700;
+    }
+
+    .blue {
+      color: #2563eb;
+    }
+
+    .green {
+      color: #16a34a;
+    }
+
+    .orange {
+      color: #ea580c;
+    }
+
+    .red {
+      color: #dc2626;
+    }
+
+    /* CONTENT */
+    .grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .panel-header h2 {
+      font-size: 17px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 13px 10px;
+      text-align: left;
+      border-bottom: 1px solid #eef2f7;
+      font-size: 14px;
+    }
+
+    th {
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+
+    .badge-green {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-orange {
+      background: #ffedd5;
+      color: #9a3412;
+    }
+
+    .badge-red {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* PROGRESS */
+    .progress {
+      width: 100%;
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #2563eb;
+    }
+
+    /* BUTTON */
+    .btn {
+      border: none;
+      background: #2563eb;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .btn:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+    }
+
+    /* FORM */
+    .form {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 13px;
+      color: #475569;
+    }
+
+    input,
+    select {
+      border: 1px solid #dbe1ea;
+      padding: 11px;
+      border-radius: 7px;
+      outline: none;
+      width: 100%;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #2563eb;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1100px) {
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .sidebar {
+        width: 65px;
+      }
+
+      .logo {
+        font-size: 0;
+      }
+
+      .logo span {
+        font-size: 20px;
+      }
+
+      .menu button {
+        font-size: 0;
+        text-align: center;
+      }
+
+      .main {
+        margin-left: 65px;
+        width: calc(100% - 65px);
+        padding: 15px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .form {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="logo">
+      ADS <span>MANAGER</span>
+    </div>
+
+    <ul class="menu">
+
+      <li>
+        <button class="active" onclick="showPage('dashboard', this)">
+          📊 Dashboard
+        </button>
+      </li>
+
+      <li>
+        <button onclick="showPage('customers', this)">
+          👤 Khách hàng
+        </button>
+      </li>
+
+      <li>
+        <button onclick="showPage('campaigns', this)">
+          🎯 Chiến dịch
+        </button>
+      </li>
+
+      <li>
+        <button onclick="showPage('spend', this)">
+          💰 Chi tiêu Ads
+        </button>
+      </li>
+
+      <li>
+        <button onclick="showPage('transactions', this)">
+          💳 Giao dịch
+        </button>
+      </li>
+
+      <li>
+        <button onclick="showPage('reports', this)">
+          📈 Báo cáo
+        </button>
+      </li>
+
+    </ul>
+
+  </aside>
+
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <section id="dashboard">
+
+      <div class="topbar">
+
+        <div>
+          <h1>Dashboard</h1>
+          <div class="date" id="today"></div>
+        </div>
+
+        <button class="btn" onclick="showPage('spend')">
+          + Nhập chi tiêu
+        </button>
+
+      </div>
+
+
+      <!-- CARDS -->
+
+      <div class="cards">
+
+        <div class="card">
+          <div class="card-title">
+            Chi tiêu hôm nay
+          </div>
+
+          <div class="card-value blue" id="todaySpend">
+            0đ
+          </div>
+        </div>
+
+
+        <div class="card">
+          <div class="card-title">
+            Chi tiêu tháng này
+          </div>
+
+          <div class="card-value orange" id="monthSpend">
+            0đ
+          </div>
+        </div>
+
+
+        <div class="card">
+          <div class="card-title">
+            Tiền khách đã nạp
+          </div>
+
+          <div class="card-value green" id="totalDeposit">
+            0đ
+          </div>
+        </div>
+
+
+        <div class="card">
+          <div class="card-title">
+            Công nợ
+          </div>
+
+          <div class="card-value red" id="debt">
+            0đ
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="grid">
+
+        <!-- CAMPAIGN -->
+
+        <div class="panel">
+
+          <div class="panel-header">
+            <h2>Chiến dịch đang chạy</h2>
+
+            <button class="btn" onclick="showPage('campaigns')">
+              Xem tất cả
+            </button>
+          </div>
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Chiến dịch</th>
+                <th>Ngân sách</th>
+                <th>Đã chi</th>
+                <th>Tiến độ</th>
+              </tr>
+            </thead>
+
+            <tbody id="campaignTable">
+
+              <tr>
+                <td colspan="4">
+                  Chưa có chiến dịch
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+        <!-- CUSTOMER -->
+
+        <div class="panel">
+
+          <div class="panel-header">
+            <h2>Khách hàng</h2>
+          </div>
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Khách hàng</th>
+                <th>Số dư</th>
+              </tr>
+            </thead>
+
+            <tbody id="customerTable">
+
+              <tr>
+                <td colspan="2">
+                  Chưa có khách hàng
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- CUSTOMERS -->
+
+    <section id="customers" class="hidden">
+
+      <div class="topbar">
+        <h1>Khách hàng</h1>
+
+        <button class="btn" onclick="toggleForm('customerForm')">
+          + Thêm khách hàng
+        </button>
+      </div>
+
+
+      <div id="customerForm" class="panel hidden">
+
+        <h2 style="margin-bottom:20px">
+          Thêm khách hàng
+        </h2>
+
+        <div class="form">
+
+          <div class="form-group">
+            <label>Tên khách hàng</label>
+            <input id="customerName" placeholder="VD: Nội Thất Hoàng Huân">
+          </div>
+
+          <div class="form-group">
+            <label>Số điện thoại</label>
+            <input id="customerPhone" placeholder="09xxxxxxxx">
+          </div>
+
+          <div class="form-group full">
+            <label>Ghi chú</label>
+            <input id="customerNote" placeholder="Ghi chú">
+          </div>
+
+        </div>
+
+        <button class="btn" style="margin-top:15px" onclick="addCustomer()">
+          Lưu khách hàng
+        </button>
+
+      </div>
+
+
+      <div class="panel">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Tên khách hàng</th>
+              <th>Số điện thoại</th>
+              <th>Số dư</th>
+              <th>Trạng thái</th>
+            </tr>
+          </thead>
+
+          <tbody id="customersList"></tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- CAMPAIGNS -->
+
+    <section id="campaigns" class="hidden">
+
+      <div class="topbar">
+
+        <h1>Chiến dịch</h1>
+
+        <button class="btn" onclick="toggleForm('campaignForm')">
+          + Thêm chiến dịch
+        </button>
+
+      </div>
+
+
+      <div id="campaignForm" class="panel hidden">
+
+        <h2 style="margin-bottom:20px">
+          Thêm chiến dịch
+        </h2>
+
+        <div class="form">
+
+          <div class="form-group">
+            <label>Tên chiến dịch</label>
+            <input id="campaignName" placeholder="VD: Live tối 27/08">
+          </div>
+
+          <div class="form-group">
+            <label>Khách hàng</label>
+            <select id="campaignCustomer"></select>
+          </div>
+
+          <div class="form-group">
+            <label>Ngân sách</label>
+            <input id="campaignBudget" type="number" placeholder="10000000">
+          </div>
+
+          <div class="form-group">
+            <label>Ngân sách/ngày</label>
+            <input id="campaignDaily" type="number" placeholder="5000000">
+          </div>
+
+        </div>
+
+        <button class="btn" style="margin-top:15px" onclick="addCampaign()">
+          Lưu chiến dịch
+        </button>
+
+      </div>
+
+
+      <div class="panel">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Chiến dịch</th>
+              <th>Khách hàng</th>
+              <th>Ngân sách</th>
+              <th>Đã chi</th>
+              <th>Trạng thái</th>
+            </tr>
+
+          </thead>
+
+          <tbody id="campaignList"></tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- SPEND -->
+
+    <section id="spend" class="hidden">
+
+      <div class="topbar">
+        <h1>Chi tiêu Ads</h1>
+      </div>
+
+
+      <div class="panel">
+
+        <h2 style="margin-bottom:20px">
+          Nhập chi tiêu
+        </h2>
+
+        <div class="form">
+
+          <div class="form-group">
+            <label>Ngày</label>
+            <input type="date" id="spendDate">
+          </div>
+
+          <div class="form-group">
+            <label>Chiến dịch</label>
+            <select id="spendCampaign"></select>
+          </div>
+
+          <div class="form-group">
+            <label>Số tiền chi</label>
+            <input id="spendAmount" type="number" placeholder="5000000">
+          </div>
+
+        </div>
+
+        <button class="btn" style="margin-top:15px" onclick="addSpend()">
+          Lưu chi tiêu
+        </button>
+
+      </div>
+
+
+      <div class="panel">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Ngày</th>
+              <th>Chiến dịch</th>
+              <th>Khách hàng</th>
+              <th>Số tiền</th>
+            </tr>
+
+          </thead>
+
+          <tbody id="spendList"></tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- TRANSACTIONS -->
+
+    <section id="transactions" class="hidden">
+
+      <div class="topbar">
+        <h1>Giao dịch</h1>
+      </div>
+
+
+      <div class="panel">
+
+        <h2 style="margin-bottom:20px">
+          Khách nạp tiền
+        </h2>
+
+        <div class="form">
+
+          <div class="form-group">
+            <label>Khách hàng</label>
+            <select id="depositCustomer"></select>
+          </div>
+
+          <div class="form-group">
+            <label>Số tiền</label>
+            <input id="depositAmount" type="number" placeholder="50000000">
+          </div>
+
+        </div>
+
+        <button class="btn" style="margin-top:15px" onclick="addDeposit()">
+          Lưu giao dịch
+        </button>
+
+      </div>
+
+
+      <div class="panel">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Ngày</th>
+              <th>Khách hàng</th>
+              <th>Loại</th>
+              <th>Số tiền</th>
+            </tr>
+
+          </thead>
+
+          <tbody id="transactionList"></tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- REPORT -->
+
+    <section id="reports" class="hidden">
+
+      <div class="topbar">
+        <h1>Báo cáo</h1>
+      </div>
+
+
+      <div class="cards">
+
+        <div class="card">
+          <div class="card-title">Tổng chi Ads</div>
+          <div class="card-value blue" id="reportSpend">
+            0đ
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Tổng tiền nạp</div>
+          <div class="card-value green" id="reportDeposit">
+            0đ
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Số khách hàng</div>
+          <div class="card-value" id="reportCustomers">
+            0
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Số chiến dịch</div>
+          <div class="card-value" id="reportCampaigns">
+            0
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+<script>
+
+  /* =========================
+     DATA
+  ========================= */
+
+  let customers =
+    JSON.parse(localStorage.getItem("customers")) || [];
+
+  let campaigns =
+    JSON.parse(localStorage.getItem("campaigns")) || [];
+
+  let spends =
+    JSON.parse(localStorage.getItem("spends")) || [];
+
+  let transactions =
+    JSON.parse(localStorage.getItem("transactions")) || [];
+
+
+  /* =========================
+     UTILITY
+  ========================= */
+
+  function money(number) {
+
+    return Number(number || 0).toLocaleString("vi-VN") + "đ";
+
+  }
+
+
+  function todayString() {
+
+    const d = new Date();
+
+    return d.toISOString().split("T")[0];
+
+  }
+
+
+  document.getElementById("today").innerText =
+    new Date().toLocaleDateString("vi-VN");
+
+
+  document.getElementById("spendDate").value =
+    todayString();
+
+
+  /* =========================
+     NAVIGATION
+  ========================= */
+
+  function showPage(page, button) {
+
+    const pages = [
+      "dashboard",
+      "customers",
+      "campaigns",
+      "spend",
+      "transactions",
+      "reports"
+    ];
+
+    pages.forEach(id => {
+
+      document.getElementById(id)
+        .classList.add("hidden");
+
+    });
+
+
+    document.getElementById(page)
+      .classList.remove("hidden");
+
+
+    if (button) {
+
+      document.querySelectorAll(".menu button")
+        .forEach(btn => btn.classList.remove("active"));
+
+      button.classList.add("active");
+
+    }
+
+
+    renderAll();
+
+  }
+
+
+  function toggleForm(id) {
+
+    document.getElementById(id)
+      .classList.toggle("hidden");
+
+  }
+
+
+  /* =========================
+     CUSTOMER
+  ========================= */
+
+  function addCustomer() {
+
+    const name =
+      document.getElementById("customerName").value.trim();
+
+    const phone =
+      document.getElementById("customerPhone").value.trim();
+
+    const note =
+      document.getElementById("customerNote").value.trim();
+
+
+    if (!name) {
+
+      alert("Vui lòng nhập tên khách hàng.");
+
+      return;
+
+    }
+
+
+    customers.push({
+
+      id: Date.now(),
+
+      name,
+
+      phone,
+
+      note
+
+    });
+
+
+    saveData();
+
+    renderAll();
+
+
+    document.getElementById("customerName").value = "";
+    document.getElementById("customerPhone").value = "";
+    document.getElementById("customerNote").value = "";
+
+    alert("Đã thêm khách hàng.");
+
+  }
+
+
+  function getCustomerName(id) {
+
+    const customer =
+      customers.find(c => c.id == id);
+
+    return customer
+      ? customer.name
+      : "Không xác định";
+
+  }
+
+
+  /* =========================
+     CAMPAIGN
+  ========================= */
+
+  function addCampaign() {
+
+    const name =
+      document.getElementById("campaignName").value.trim();
+
+    const customerId =
+      document.getElementById("campaignCustomer").value;
+
+    const budget =
+      Number(document.getElementById("campaignBudget").value);
+
+    const daily =
+      Number(document.getElementById("campaignDaily").value);
+
+
+    if (!name || !customerId || !budget) {
+
+      alert("Vui lòng nhập đầy đủ thông tin.");
+
+      return;
+
+    }
+
+
+    campaigns.push({
+
+      id: Date.now(),
+
+      name,
+
+      customerId,
+
+      budget,
+
+      daily
+
+    });
+
+
+    saveData();
+
+    renderAll();
+
+    alert("Đã thêm chiến dịch.");
+
+  }
+
+
+  function campaignSpend(id) {
+
+    return spends
+
+      .filter(s => s.campaignId == id)
+
+      .reduce((sum, s) => sum + Number(s.amount), 0);
+
+  }
+
+
+  /* =========================
+     SPEND
+  ========================= */
+
+  function addSpend() {
+
+    const date =
+      document.getElementById("spendDate").value;
+
+    const campaignId =
+      document.getElementById("spendCampaign").value;
+
+    const amount =
+      Number(document.getElementById("spendAmount").value);
+
+
+    if (!date || !campaignId || !amount) {
+
+      alert("Vui lòng nhập đầy đủ thông tin.");
+
+      return;
+
+    }
+
+
+    spends.push({
+
+      id: Date.now(),
+
+      date,
+
+      campaignId,
+
+      amount
+
+    });
+
+
+    saveData();
+
+    renderAll();
+
+    document.getElementById("spendAmount").value = "";
+
+    alert("Đã lưu chi tiêu.");
+
+  }
+
+
+  /* =========================
+     DEPOSIT
+  ========================= */
+
+  function addDeposit() {
+
+    const customerId =
+      document.getElementById("depositCustomer").value;
+
+    const amount =
+      Number(document.getElementById("depositAmount").value);
+
+
+    if (!customerId || !amount) {
+
+      alert("Vui lòng nhập đầy đủ thông tin.");
+
+      return;
+
+    }
+
+
+    transactions.push({
+
+      id: Date.now(),
+
+      date: todayString(),
+
+      customerId,
+
+      type: "deposit",
+
+      amount
+
+    });
+
+
+    saveData();
+
+    renderAll();
+
+    document.getElementById("depositAmount").value = "";
+
+    alert("Đã ghi nhận tiền khách nạp.");
+
+  }
+
+
+  /* =========================
+     CUSTOMER BALANCE
+  ========================= */
+
+  function customerBalance(customerId) {
+
+    const deposits = transactions
+
+      .filter(t =>
+        t.customerId == customerId &&
+        t.type === "deposit"
+      )
+
+      .reduce((sum, t) =>
+        sum + Number(t.amount), 0);
+
+
+    const customerCampaigns =
+      campaigns
+        .filter(c => c.customerId == customerId)
+        .map(c => c.id);
+
+
+    const spend = spends
+
+      .filter(s =>
+        customerCampaigns.includes(Number(s.campaignId))
+      )
+
+      .reduce((sum, s) =>
+        sum + Number(s.amount), 0);
+
+
+    return deposits - spend;
+
+  }
+
+
+  /* =========================
+     RENDER CUSTOMERS
+  ========================= */
+
+  function renderCustomers() {
+
+    const table =
+      document.getElementById("customersList");
+
+
+    if (!customers.length) {
+
+      table.innerHTML =
+        `<tr>
+          <td colspan="4">Chưa có khách hàng</td>
+        </tr>`;
+
+      return;
+
+    }
+
+
+    table.innerHTML = customers.map(c => {
+
+      const balance =
+        customerBalance(c.id);
+
+
+      return `
+        <tr>
+
+          <td>
+            <strong>${c.name}</strong>
+          </td>
+
+          <td>${c.phone || "-"}</td>
+
+          <td class="${balance < 0 ? "red" : "green"}">
+            ${money(balance)}
+          </td>
+
+          <td>
+            <span class="badge badge-green">
+              Đang hoạt động
+            </span>
+          </td>
+
+        </tr>
+      `;
+
+    }).join("");
+
+  }
+
+
+  /* =========================
+     RENDER CAMPAIGNS
+  ========================= */
+
+  function renderCampaigns() {
+
+    const table =
+      document.getElementById("campaignList");
+
+    const dashboard =
+      document.getElementById("campaignTable");
+
+
+    if (!campaigns.length) {
+
+      table.innerHTML =
+        `<tr>
+          <td colspan="5">Chưa có chiến dịch</td>
+        </tr>`;
+
+      dashboard.innerHTML =
+        `<tr>
+          <td colspan="4">Chưa có chiến dịch</td>
+        </tr>`;
+
+      return;
+
+    }
+
+
+    table.innerHTML = campaigns.map(c => {
+
+      const spent =
+        campaignSpend(c.id);
+
+      const percent =
+        Math.min((spent / c.budget) * 100, 100);
+
+      const status =
+        percent >= 100
+          ? `<span class="badge badge-red">Vượt ngân sách</span>`
+          : percent >= 80
+          ? `<span class="badge badge-orange">Sắp hết</span>`
+          : `<span class="badge badge-green">Đang chạy</span>`;
+
+
+      return `
+        <tr>
+
+          <td>
+            <strong>${c.name}</strong>
+          </td>
+
+          <td>
+            ${getCustomerName(c.customerId)}
+          </td>
+
+          <td>
+            ${money(c.budget)}
+          </td>
+
+          <td>
+            ${money(spent)}
+          </td>
+
+          <td>
+            ${status}
+          </td>
+
+        </tr>
+      `;
+
+    }).join("");
+
+
+    dashboard.innerHTML = campaigns.map(c => {
+
+      const spent =
+        campaignSpend(c.id);
+
+      const percent =
+        Math.min((spent / c.budget) * 100, 100);
+
+
+      return `
+        <tr>
+
+          <td>
+            <strong>${c.name}</strong>
+          </td>
+
+          <td>
+            ${money(c.budget)}
+          </td>
+
+          <td>
+            ${money(spent)}
+          </td>
+
+          <td style="min-width:150px">
+
+            ${percent.toFixed(0)}%
+
+            <div class="progress">
+
+              <div
+                class="progress-bar"
+                style="width:${percent}%">
+              </div>
+
+            </div>
+
+          </td>
+
+        </tr>
+      `;
+
+    }).join("");
+
+  }
+
+
+  /* =========================
+     RENDER SPENDS
+  ========================= */
+
+  function renderSpends() {
+
+    const table =
+      document.getElementById("spendList");
+
+
+    if (!spends.length) {
+
+      table.innerHTML =
+        `<tr>
+          <td colspan="4">Chưa có dữ liệu</td>
+        </tr>`;
+
+      return;
+
+    }
+
+
+    table.innerHTML = spends
+
+      .slice()
+      .reverse()
+      .map(s => {
+
+        const campaign =
+          campaigns.find(c =>
+            c.id == s.campaignId
+          );
+
+
+        return `
+          <tr>
+
+            <td>${s.date}</td>
+
+            <td>
+              ${campaign ? campaign.name : "-"}
+            </td>
+
+            <td>
+              ${
+                campaign
+                ? getCustomerName(campaign.customerId)
+                : "-"
+              }
+            </td>
+
+            <td class="blue">
+              ${money(s.amount)}
+            </td>
+
+          </tr>
+        `;
+
+      }).join("");
+
+  }
+
+
+  /* =========================
+     RENDER TRANSACTIONS
+  ========================= */
+
+  function renderTransactions() {
+
+    const table =
+      document.getElementById("transactionList");
+
+
+    if (!transactions.length) {
+
+      table.innerHTML =
+        `<tr>
+          <td colspan="4">Chưa có giao dịch</td>
+        </tr>`;
+
+      return;
+
+    }
+
+
+    table.innerHTML =
+      transactions
+      .slice()
+      .reverse()
+      .map(t => {
+
+        return `
+          <tr>
+
+            <td>${t.date}</td>
+
+            <td>
+              ${getCustomerName(t.customerId)}
+            </td>
+
+            <td>
+              <span class="badge badge-green">
+                Khách nạp
+              </span>
+            </td>
+
+            <td class="green">
+              +${money(t.amount)}
+            </td>
+
+          </tr>
+        `;
+
+      }).join("");
+
+  }
+
+
+  /* =========================
+     SELECTS
+  ========================= */
+
+  function renderSelects() {
+
+    const customerOptions = customers.map(c =>
+
+      `<option value="${c.id}">
+        ${c.name}
+      </option>`
+
+    ).join("");
+
+
+    document.getElementById("campaignCustomer").innerHTML =
+      customerOptions;
+
+    document.getElementById("depositCustomer").innerHTML =
+      customerOptions;
+
+
+    document.getElementById("spendCampaign").innerHTML =
+      campaigns.map(c =>
+
+        `<option value="${c.id}">
+          ${c.name}
+        </option>`
+
+      ).join("");
+
+  }
+
+
+  /* =========================
+     DASHBOARD
+  ========================= */
+
+  function renderDashboard() {
+
+    const today =
+      todayString();
+
+
+    const todaySpend =
+      spends
+
+      .filter(s => s.date === today)
+
+      .reduce((sum, s) =>
+        sum + Number(s.amount), 0);
+
+
+    const month =
+      today.substring(0, 7);
+
+
+    const monthSpend =
+      spends
+
+      .filter(s =>
+        s.date.startsWith(month)
+      )
+
+      .reduce((sum, s) =>
+        sum + Number(s.amount), 0);
+
+
+    const deposits =
+      transactions
+
+      .filter(t => t.type === "deposit")
+
+      .reduce((sum, t) =>
+        sum + Number(t.amount), 0);
+
+
+    let debt = 0;
+
+
+    customers.forEach(c => {
+
+      const balance =
+        customerBalance(c.id);
+
+      if (balance < 0) {
+
+        debt += Math.abs(balance);
+
+      }
+
+    });
+
+
+    document.getElementById("todaySpend").innerText =
+      money(todaySpend);
+
+    document.getElementById("monthSpend").innerText =
+      money(monthSpend);
+
+    document.getElementById("totalDeposit").innerText =
+      money(deposits);
+
+    document.getElementById("debt").innerText =
+      money(debt);
+
+
+    document.getElementById("reportSpend").innerText =
+      money(monthSpend);
+
+    document.getElementById("reportDeposit").innerText =
+      money(deposits);
+
+    document.getElementById("reportCustomers").innerText =
+      customers.length;
+
+    document.getElementById("reportCampaigns").innerText =
+      campaigns.length;
+
+
+    const dashboardCustomer =
+      document.getElementById("customerTable");
+
+
+    if (!customers.length) {
+
+      dashboardCustomer.innerHTML =
+        `<tr>
+          <td colspan="2">Chưa có khách hàng</td>
+        </tr>`;
+
+      return;
+
+    }
+
+
+    dashboardCustomer.innerHTML =
+      customers.map(c => {
+
+        const balance =
+          customerBalance(c.id);
+
+
+        return `
+          <tr>
+
+            <td>
+              ${c.name}
+            </td>
+
+            <td class="${balance < 0 ? "red" : "green"}">
+              ${money(balance)}
+            </td>
+
+          </tr>
+        `;
+
+      }).join("");
+
+  }
+
+
+  /* =========================
+     SAVE
+  ========================= */
+
+  function saveData() {
+
+    localStorage.setItem(
+      "customers",
+      JSON.stringify(customers)
+    );
+
+    localStorage.setItem(
+      "campaigns",
+      JSON.stringify(campaigns)
+    );
+
+    localStorage.setItem(
+      "spends",
+      JSON.stringify(spends)
+    );
+
+    localStorage.setItem(
+      "transactions",
+      JSON.stringify(transactions)
+    );
+
+  }
+
+
+  /* =========================
+     RENDER ALL
+  ========================= */
+
+  function renderAll() {
+
+    renderCustomers();
+
+    renderCampaigns();
+
+    renderSpends();
+
+    renderTransactions();
+
+    renderSelects();
+
+    renderDashboard();
+
+  }
+
+
+  renderAll();
+
+</script>
+
+</body>
+</html>
